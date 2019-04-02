@@ -48,7 +48,7 @@ class TransactionViewModel(val database : TransactionDatabaseDAO, application: A
     }
     val time = Transformations.map(transactionTime){
         //getDateString(it,"HH:mm:ss")
-        convertDatePattern(it.toString(), "HHmmss","HH:mm:ss")
+        convertDatePattern(it.toString(), "hhmmss","hh:mm:ss")
     }
 
     //init{

@@ -21,7 +21,7 @@ interface TransactionDatabaseDAO{
     @Query("SELECT * FROM money_transaction_table where transaction_date == :date order by transaction_time DESC")
     fun getTransactionByDate(date: Int) : LiveData<List<MoneyTransaction>>
 
-    @Query("SELECT * FROM money_transaction_table where transaction_date BETWEEN :startDate AND :endDate order by transaction_time DESC")
+    @Query("SELECT * FROM money_transaction_table where transaction_date BETWEEN :startDate AND :endDate order by transaction_time DESC ")
     fun getTransactionByDateRange(startDate: Int, endDate: Int ) : LiveData<List<MoneyTransaction>>
 
     @Query("SELECT * FROM money_transaction_table where transactionId == :key")

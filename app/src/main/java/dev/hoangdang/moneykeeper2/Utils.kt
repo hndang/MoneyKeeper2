@@ -14,14 +14,14 @@ fun getDateString(rawDate:Long, pattern:String): String{
 
 fun convertDatePattern(rawDate: String, oldPattern: String, newPattern: String): String{
     val calendar = Calendar.getInstance()
-    val sdf = SimpleDateFormat(oldPattern, Locale.ENGLISH)
+    val sdf = SimpleDateFormat(oldPattern)
     calendar.time = sdf.parse(rawDate)
-    return SimpleDateFormat(newPattern, Locale.ENGLISH).format(calendar.time)
+    return SimpleDateFormat(newPattern).format(calendar.time)
 }
 
 fun getDateFromString(rawDate: String, oldPattern: String, newPattern: String): Long{
     val calendar = Calendar.getInstance()
-    val sdf = SimpleDateFormat(oldPattern, Locale.ENGLISH)
+    val sdf = SimpleDateFormat(oldPattern)
     calendar.time = sdf.parse(rawDate)
-    return SimpleDateFormat(newPattern, Locale.ENGLISH).format(calendar.time).toLong()
+    return SimpleDateFormat(newPattern).format(calendar.time).toLong()
 }

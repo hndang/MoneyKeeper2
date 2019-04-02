@@ -58,7 +58,7 @@ class TransactionFragment: Fragment(){
             val category = binding.categorySpinner.selectedItemPosition
             val note = binding.noteEditText.text.toString()
             val dateRaw = convertDatePattern(binding.dateEditText.text.toString(),"dd-MMM-yyyy","yyyyMMdd")
-            val timeRaw = convertDatePattern(binding.timeEditText.text.toString(),"HH:mm:ss","HHmmss")
+            val timeRaw = convertDatePattern(binding.timeEditText.text.toString(),"hh:mm:ss","hhmmss")
 
             transactionViewModel.createNewTransaction(amtRaw.toDouble(),category,note,dateRaw.toLong(),timeRaw.toLong())
         }
