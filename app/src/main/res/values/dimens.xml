@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="amountRV">24sp</dimen>
+    <dimen name="categoryRV">20sp</dimen>
+    <dimen name="dateRV">16sp</dimen>
+</resources>

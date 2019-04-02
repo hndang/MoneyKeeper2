@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:id="@+id/main_navigation" app:startDestination="@id/homeFragment">
+
+    <fragment android:id="@+id/homeFragment" android:name="dev.hoangdang.moneykeeper2.screens.home.HomeFragment"
+              android:label="HomeFragment"
+              tools:layout="@layout/home_fragment">
+        <action android:id="@+id/action_homeFragment_to_transactionFragment" app:destination="@id/transactionFragment"/>
+    </fragment>
+    <fragment android:id="@+id/transactionFragment"
+              tools:layout="@layout/transaction_fragment"
+              android:name="dev.hoangdang.moneykeeper2.screens.transaction.TransactionFragment"
+              android:label="TransactionFragment">
+        <argument
+                android:name="transactionId"
+                app:argType="long" />
+        <action android:id="@+id/action_transactionFragment_to_homeFragment" app:destination="@id/homeFragment"
+                app:launchSingleTop="true" app:popUpToInclusive="true" app:popUpTo="@+id/homeFragment"/>
+    </fragment>
+</navigation>
