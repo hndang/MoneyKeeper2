@@ -7,6 +7,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import dev.hoangdang.moneykeeper2.database.MoneyTransaction
 import dev.hoangdang.moneykeeper2.database.TransactionDatabaseDAO
+import dev.hoangdang.moneykeeper2.datePatternDB
 import kotlinx.coroutines.*
 import java.text.SimpleDateFormat
 import java.util.*
@@ -15,7 +16,7 @@ class HomeViewModel(val database : TransactionDatabaseDAO, application: Applicat
 
     // Database variables
     private var viewModelJob = Job() // Parent jobs for HomeViewModel coroutine
-    val transactionsToday = database.getTransactionByDate(SimpleDateFormat("yyyyMMdd").format(Calendar.getInstance().time).toInt())
+    val transactionsToday = database.getTransactionByDate(SimpleDateFormat(datePatternDB).format(Calendar.getInstance().time).toInt())
     val testLatestMoney = Transformations.map(transactionsToday){
         if(it.size >0)
             it.get(0).transactionAmt.toString()

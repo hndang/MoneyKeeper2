@@ -6,10 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.RecyclerView
-import dev.hoangdang.moneykeeper2.CategoryUtil
-import dev.hoangdang.moneykeeper2.R
+import dev.hoangdang.moneykeeper2.*
 import dev.hoangdang.moneykeeper2.database.MoneyTransaction
-import dev.hoangdang.moneykeeper2.convertDatePattern
 import kotlinx.android.synthetic.main.transaction_item.view.*
 
 class TransactionAdapter(private val transactions : List<MoneyTransaction>):RecyclerView.Adapter<TransactionAdapter.TransactionHolder>(){
@@ -27,7 +25,7 @@ class TransactionAdapter(private val transactions : List<MoneyTransaction>):Recy
             // Put ViewModel in here ?? vs observer from outside
             view.amount_textViewRV.text = String.format(view.resources.getString(R.string.money_format),transaction.transactionAmt)
             //view.date_textViewRV.text = getDateString(transaction.transactionDate, "dd-MMM-yyyy")
-            view.date_textViewRV.text = convertDatePattern(transaction.transactionDate.toString(), "yyyyMMdd","dd-MMM-yyyy")
+            view.date_textViewRV.text = convertDatePattern(transaction.transactionDate.toString(), datePatternDB, datePatternView)
             view.category_textViewRV.text = CategoryUtil.getCategoryName(transaction.transactionCategory)
             view.category_imageViewRV.setImageResource(CategoryUtil.getCategoryDrawable(transaction.transactionCategory))
             Log.d("MyRecyclerView", "Bind transaction")

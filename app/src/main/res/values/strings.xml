@@ -4,4 +4,6 @@
     <string name="money_format">%.2f $</string>
     <string name="hint_transaction_amount">Transaction Amount</string>
     <string name="hint_note">Note</string>
+    <string name="delete_button">Delete</string>
+    <string name="save_button">Save</string>
 </resources>
