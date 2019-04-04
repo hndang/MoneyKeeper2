@@ -9,11 +9,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.ArrayAdapter
+import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.Navigation
+import com.google.android.material.snackbar.Snackbar
 import dev.hoangdang.moneykeeper2.*
 import dev.hoangdang.moneykeeper2.database.TransactionDatabase
 import dev.hoangdang.moneykeeper2.databinding.TransactionFragmentBinding
@@ -62,31 +64,38 @@ class TransactionFragment: Fragment(){
 
         // Set up Save button
         binding.saveButton.setOnClickListener{
-            var amtRaw = binding.transactionAmtEditText.text.toString().toDouble()
-            if(binding.signSwitch.isChecked && amtRaw >0){
-                amtRaw *= -1
-            }
-            val category = binding.categorySpinner.selectedItemPosition
-            val note = binding.noteEditText.text.toString()
-            val dateRaw = convertDatePattern(binding.dateEditText.text.toString(), datePatternView, datePatternDB).toLong()
-            val timeRaw = convertDatePattern(binding.timeEditText.text.toString(), timePatternView, timePatternDB).toLong()
 
-            if(isEditing){
-                transactionViewModel.updateNewTransaction(
-                    amtRaw,
-                    category,
-                    note,
-                    dateRaw,
-                    timeRaw
-                )
+            if(binding.transactionAmtEditText.text.toString() == ""){
+                Snackbar.make(it, "No money Amount entered !!", Snackbar.LENGTH_SHORT).show()
             }else {
-                transactionViewModel.createNewTransaction(
-                    amtRaw,
-                    category,
-                    note,
-                    dateRaw,
-                    timeRaw
-                )
+                var amtRaw = binding.transactionAmtEditText.text.toString().toDouble()
+                if (binding.signSwitch.isChecked && amtRaw > 0) {
+                    amtRaw *= -1
+                }
+                val category = binding.categorySpinner.selectedItemPosition
+                val note = binding.noteEditText.text.toString()
+                val dateRaw =
+                    convertDatePattern(binding.dateEditText.text.toString(), datePatternView, datePatternDB).toLong()
+                val timeRaw =
+                    convertDatePattern(binding.timeEditText.text.toString(), timePatternView, timePatternDB).toLong()
+
+                if (isEditing) {
+                    transactionViewModel.updateNewTransaction(
+                        amtRaw,
+                        category,
+                        note,
+                        dateRaw,
+                        timeRaw
+                    )
+                } else {
+                    transactionViewModel.createNewTransaction(
+                        amtRaw,
+                        category,
+                        note,
+                        dateRaw,
+                        timeRaw
+                    )
+                }
             }
         }
 

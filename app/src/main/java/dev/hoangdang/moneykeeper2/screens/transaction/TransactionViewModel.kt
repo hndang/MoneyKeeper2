@@ -120,6 +120,7 @@ class TransactionViewModel(val database : TransactionDatabaseDAO, application: A
             it.transactionDate = transactionDate ?: 0
             it.transactionTime = transactionTime ?: 0
         }
+        //if(transactionAmt)
         uiScope.launch {
             withContext(Dispatchers.IO){
                 database.insert(newTransaction)
