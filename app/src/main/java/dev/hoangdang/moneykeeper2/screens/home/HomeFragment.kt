@@ -57,8 +57,13 @@ class HomeFragment : Fragment(){
         binding.transactionsRecyclerView.layoutManager = linearLayoutManager
 
         homeViewModel.transactionsToday.observe(this, Observer {
-            adapter = TransactionAdapter(it) // Efficient ?
-            binding.transactionsRecyclerView.adapter = adapter
+            if(binding.transactionsRecyclerView.adapter == null){
+                adapter = TransactionAdapter(it)
+                binding.transactionsRecyclerView.adapter = adapter
+            }else{
+                binding.transactionsRecyclerView.adapter!!.notifyDataSetChanged() // Efficient ?
+            }
+
         })
 
         return binding.root
