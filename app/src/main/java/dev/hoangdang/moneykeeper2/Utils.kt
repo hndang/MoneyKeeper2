@@ -14,3 +14,10 @@ fun convertDatePattern(rawDate: String, oldPattern: String, newPattern: String):
     calendar.time = sdf.parse(rawDate)
     return SimpleDateFormat(newPattern).format(calendar.time)
 }
+
+fun getCalendarFromPattern(rawDate: String, pattern: String):Calendar{
+    val calendar = Calendar.getInstance()
+    val sdf = SimpleDateFormat(pattern)
+    calendar.time = sdf.parse(rawDate)
+    return calendar
+}

@@ -2,7 +2,7 @@ package dev.hoangdang.moneykeeper2
 
 class CategoryUtil{
     companion object {
-        private val categories : List<Category> = mutableListOf(
+        val categories : List<Category> = mutableListOf(
             Category("Unknown", R.drawable.ic_category_unknown),
             Category("Food", R.drawable.ic_category_food),
             Category("Grocery", R.drawable.ic_category_grocery),
@@ -14,17 +14,17 @@ class CategoryUtil{
         )
 
         fun getCategoryName(id: Int): String {
-            if (id in 1..7) {
-                return categories[id].name
+            return if (id in 1..7) {
+                categories[id].name
             } else {
-                return categories[0].name
+                categories[0].name
             }
         }
         fun getCategoryDrawable(id: Int): Int {
-            if (id in 1..7) {
-                return categories[id].resourceId
+            return if (id in 1..7) {
+                categories[id].resourceId
             } else {
-                return categories[0].resourceId
+                categories[0].resourceId
             }
         }
 

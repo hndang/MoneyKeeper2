@@ -11,7 +11,6 @@ import dev.hoangdang.moneykeeper2.database.MoneyTransaction
 import dev.hoangdang.moneykeeper2.database.TransactionDatabaseDAO
 import kotlinx.coroutines.*
 import java.text.SimpleDateFormat
-import java.time.LocalDateTime
 import java.util.*
 
 class TransactionViewModel(val database : TransactionDatabaseDAO, application: Application) : AndroidViewModel(application){
@@ -29,10 +28,12 @@ class TransactionViewModel(val database : TransactionDatabaseDAO, application: A
     private var viewModelJob = Job() // Parent jobs for HomeViewModel coroutine
     private val uiScope = CoroutineScope(Dispatchers.Main + viewModelJob)
     private val newTransaction = MoneyTransaction()
-    private var currentTransaction = MutableLiveData<MoneyTransaction?>()
+    private var _currentTransaction = MutableLiveData<MoneyTransaction?>()
+    val currentTransaction:LiveData<MoneyTransaction?>
+        get() = _currentTransaction
 
     // Setting up the transformation Value for UI ****
-    val amount : LiveData<String> = Transformations.map(currentTransaction){
+    val amount : LiveData<String> = Transformations.map(_currentTransaction){
         when {
             it?.transactionAmt == 0.0 -> ""
             it?.transactionAmt!! < 0.0 -> {
@@ -46,16 +47,16 @@ class TransactionViewModel(val database : TransactionDatabaseDAO, application: A
         }
 
     }
-    val category : LiveData<Int> = Transformations.map(currentTransaction){
+    val category : LiveData<Int> = Transformations.map(_currentTransaction){
         it?.transactionCategory
     }
-    val note : LiveData<String> = Transformations.map(currentTransaction){
+    val note : LiveData<String> = Transformations.map(_currentTransaction){
         it?.transactionNote
     }
-    val date : LiveData<String> = Transformations.map(currentTransaction){
+    val date : LiveData<String> = Transformations.map(_currentTransaction){
         convertDatePattern(it?.transactionDate.toString(), datePatternDB, datePatternView)
     }
-    val time : LiveData<String> = Transformations.map(currentTransaction){
+    val time : LiveData<String> = Transformations.map(_currentTransaction){
         convertDatePattern(it?.transactionTime.toString().padStart(6,'0'), timePatternDB, timePatternView)
     }
 
@@ -63,7 +64,7 @@ class TransactionViewModel(val database : TransactionDatabaseDAO, application: A
     fun initalizeNewTransaction(){
         uiScope.launch {
             // Using UI coroutine (as per defined)
-            currentTransaction.value = getTransactionFromDatabase(-1)
+            _currentTransaction.value = getTransactionFromDatabase(-1)
         }
     }
 
@@ -71,7 +72,7 @@ class TransactionViewModel(val database : TransactionDatabaseDAO, application: A
         // Launch coroutine to get Tonight from the Database
         uiScope.launch {
             // Using UI coroutine (as per defined)
-            currentTransaction.value = getTransactionFromDatabase(id)
+            _currentTransaction.value = getTransactionFromDatabase(id)
         }
     }
 
@@ -98,14 +99,14 @@ class TransactionViewModel(val database : TransactionDatabaseDAO, application: A
         _navigateToHome.value = null
     }
 
-    fun Cancel(){
+    fun cancel(){
         _navigateToHome.value = true
     }
 
     fun deleteTransaction(){
         uiScope.launch {
             withContext(Dispatchers.IO){
-                database.delete(currentTransaction.value!!)
+                database.delete(_currentTransaction.value!!)
             }
         }
         _navigateToHome.value = true
@@ -130,7 +131,7 @@ class TransactionViewModel(val database : TransactionDatabaseDAO, application: A
     }
 
     fun updateNewTransaction(transactionAmt:Double, transactionCategory:Int, transactionNote:String, transactionDate:Long, transactionTime:Long){
-        currentTransaction.value.let{
+        _currentTransaction.value.let{
             Log.v("Transaction","trans=$transactionAmt cate=$transactionCategory note=$transactionNote date=$transactionDate time=$transactionTime")
             it?.transactionAmt = transactionAmt ?: 0.0 //Default is 0
             it?.transactionCategory = transactionCategory ?: 0 //Default is 0
@@ -141,10 +142,30 @@ class TransactionViewModel(val database : TransactionDatabaseDAO, application: A
 
         uiScope.launch {
             withContext(Dispatchers.IO){
-                database.update(currentTransaction.value!!)
+                database.update(_currentTransaction.value!!)
             }
         }
         _navigateToHome.value = true
+    }
+
+    fun updateCurrentTransaction(amt:Double = 0.0, note:String = "", category:Int = 0, date:Long = -1, time:Long = -1){
+        val temp = _currentTransaction.value
+        if(amt != 0.0){
+            temp?.transactionAmt = amt
+        }
+        if(note != ""){
+            temp?.transactionNote = note
+        }
+        if(category != 0){
+            temp?.transactionCategory = category
+        }
+        if(date != (-1).toLong()){
+            temp?.transactionDate = date
+        }
+        if(time != (-1).toLong()){
+            temp?.transactionTime = time
+        }
+        _currentTransaction.value = temp
     }
 
     override fun onCleared() {
