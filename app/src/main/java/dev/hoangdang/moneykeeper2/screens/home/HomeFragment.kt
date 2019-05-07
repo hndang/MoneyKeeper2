@@ -53,17 +53,13 @@ class HomeFragment : Fragment(){
         }
 
         //Set up the recycler view
-        val linearLayoutManager = LinearLayoutManager(this.context)
-        binding.transactionsRecyclerView.layoutManager = linearLayoutManager
+        val linearLayoutManager = LinearLayoutManager(this.context)// do this in xml ?
+        binding.transactionsRecyclerView.layoutManager = linearLayoutManager// do this in xml ?
 
-        homeViewModel.transactionsToday.observe(this, Observer {
-            if(binding.transactionsRecyclerView.adapter == null){
-                adapter = TransactionAdapter(it)
-                binding.transactionsRecyclerView.adapter = adapter
-            }else{
-                binding.transactionsRecyclerView.adapter!!.notifyDataSetChanged() // Efficient ?
-            }
-
+        val adapter = TransactionAdapter()
+        binding.transactionsRecyclerView.adapter = adapter
+        homeViewModel.transactionsToday.observe(viewLifecycleOwner, Observer {
+            adapter.data = it
         })
 
         return binding.root
