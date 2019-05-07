@@ -59,7 +59,7 @@ class HomeFragment : Fragment(){
         val adapter = TransactionAdapter()
         binding.transactionsRecyclerView.adapter = adapter
         homeViewModel.transactionsToday.observe(viewLifecycleOwner, Observer {
-            adapter.data = it
+            adapter.submitList(it)
         })
 
         return binding.root

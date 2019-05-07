@@ -5,28 +5,22 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.Navigation
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import dev.hoangdang.moneykeeper2.*
 import dev.hoangdang.moneykeeper2.database.MoneyTransaction
 import kotlinx.android.synthetic.main.transaction_item.view.*
 
-//class TransactionAdapter(private val transactions : List<MoneyTransaction>):RecyclerView.Adapter<TransactionAdapter.TransactionHolder>(){
-class TransactionAdapter:RecyclerView.Adapter<TransactionAdapter.TransactionHolder>(){
-    var data = listOf<MoneyTransaction>()
-    set(value) {
-        field = value
-        notifyDataSetChanged() // notify that data set changes
-    }
+class TransactionAdapter:ListAdapter<MoneyTransaction, TransactionAdapter.TransactionHolder>(TransactionDiffCallBack()){
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TransactionHolder {
         return TransactionHolder.from(parent)
     }
 
-    override fun getItemCount() = data.size
-
     override fun onBindViewHolder(holder: TransactionHolder, position: Int) {
         Log.d("MyRecyclerView", "onBindviewholder $position")
-        val transaction = data[position]
+        val transaction = getItem(position)
         holder.bindTransaction(transaction)
     }
 
@@ -56,6 +50,15 @@ class TransactionAdapter:RecyclerView.Adapter<TransactionAdapter.TransactionHold
         }
 
     }
+}
 
+class TransactionDiffCallBack : DiffUtil.ItemCallback<MoneyTransaction>(){
+    override fun areItemsTheSame(oldItem: MoneyTransaction, newItem: MoneyTransaction): Boolean {
+        return oldItem.transactionId == newItem.transactionId
+    }
+
+    override fun areContentsTheSame(oldItem: MoneyTransaction, newItem: MoneyTransaction): Boolean {
+        return oldItem == newItem
+    }
 
 }
