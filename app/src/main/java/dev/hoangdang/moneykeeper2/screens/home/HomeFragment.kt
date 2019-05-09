@@ -56,7 +56,14 @@ class HomeFragment : Fragment(){
         val linearLayoutManager = LinearLayoutManager(this.context)// do this in xml ?
         binding.transactionsRecyclerView.layoutManager = linearLayoutManager// do this in xml ?
 
-        val adapter = TransactionAdapter()
+        val adapter = TransactionAdapter(TransactionListener {
+            transitionId -> homeViewModel.onTransactionClicked(transitionId) // set the click listener behavior for RV
+        })
+        // Observe navigation data to reset
+        homeViewModel.navigateToTransaction.observe(this, Observer {
+            Navigation.findNavController(view!!).navigate(HomeFragmentDirections.actionHomeFragmentToTransactionFragment(it))
+        })
+
         binding.transactionsRecyclerView.adapter = adapter
         homeViewModel.transactionsToday.observe(viewLifecycleOwner, Observer {
             adapter.submitList(it)

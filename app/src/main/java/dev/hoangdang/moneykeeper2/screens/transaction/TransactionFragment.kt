@@ -3,25 +3,19 @@ package dev.hoangdang.moneykeeper2.screens.transaction
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.content.Context
-import android.opengl.Visibility
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.ArrayAdapter
-import android.widget.DatePicker
-import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.Navigation
-import androidx.navigation.NavigatorProvider
 import com.google.android.material.snackbar.Snackbar
 import dev.hoangdang.moneykeeper2.*
-import dev.hoangdang.moneykeeper2.database.MoneyTransaction
 import dev.hoangdang.moneykeeper2.database.TransactionDatabase
 import dev.hoangdang.moneykeeper2.databinding.TransactionFragmentBinding
 import java.text.SimpleDateFormat
@@ -83,9 +77,9 @@ class TransactionFragment : Fragment() {
                 val category = binding.categorySpinner.selectedItemPosition
                 val note = binding.noteEditText.text.toString()
                 val dateRaw =
-                    convertDatePattern(binding.dateEditText.text.toString(), datePatternView, datePatternDB).toLong()
+                    convertDatePattern(binding.dateEditText.text.toString(), DATE_PATTERN_VIEW, DATE_PATTERN_DB).toLong()
                 val timeRaw =
-                    convertDatePattern(binding.timeEditText.text.toString(), timePatternView, timePatternDB).toLong()
+                    convertDatePattern(binding.timeEditText.text.toString(), TIME_PATTERN_VIEW, TIME_PATTERN_DB).toLong()
 
                 if (isEditing) {
                     transactionViewModel.updateNewTransaction(
@@ -124,7 +118,7 @@ class TransactionFragment : Fragment() {
                 } else {
                     1
                 }
-            val date = SimpleDateFormat(datePatternDB).format(c.time).toLong()
+            val date = SimpleDateFormat(DATE_PATTERN_DB).format(c.time).toLong()
             val amt:Double =
                 if (binding.transactionAmtEditText.text.toString() != "") {
                     binding.transactionAmtEditText.text.toString().toDouble() * sign
@@ -137,7 +131,7 @@ class TransactionFragment : Fragment() {
         }
         binding.setDateButton.setOnClickListener {
             //TEMP as Navigation doesn't work with DialogFragment yet
-            val calendar = getCalendarFromPattern(binding.dateEditText.text.toString(), datePatternView)
+            val calendar = getCalendarFromPattern(binding.dateEditText.text.toString(), DATE_PATTERN_VIEW)
             DatePickerDialog(
                 context!!,
                 dateSetListener,
@@ -159,7 +153,7 @@ class TransactionFragment : Fragment() {
                 } else {
                     1
                 }
-            val time = SimpleDateFormat(timePatternDB).format(c.time).toLong()
+            val time = SimpleDateFormat(TIME_PATTERN_DB).format(c.time).toLong()
             val amt:Double =
                 if (binding.transactionAmtEditText.text.toString() != "") {
                     binding.transactionAmtEditText.text.toString().toDouble() * sign
@@ -172,7 +166,7 @@ class TransactionFragment : Fragment() {
         }
 
         binding.setTimeButton.setOnClickListener {
-            val calendar = getCalendarFromPattern(binding.timeEditText.text.toString(), timePatternView)
+            val calendar = getCalendarFromPattern(binding.timeEditText.text.toString(), TIME_PATTERN_VIEW)
             TimePickerDialog(
                 context!!,
                 timeSetListener,

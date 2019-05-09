@@ -2,53 +2,56 @@ package dev.hoangdang.moneykeeper2.screens.home
 
 import android.util.Log
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import androidx.navigation.Navigation
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import dev.hoangdang.moneykeeper2.*
 import dev.hoangdang.moneykeeper2.database.MoneyTransaction
-import kotlinx.android.synthetic.main.transaction_item.view.*
+import dev.hoangdang.moneykeeper2.databinding.TransactionItemBinding
 
-class TransactionAdapter:ListAdapter<MoneyTransaction, TransactionAdapter.TransactionHolder>(TransactionDiffCallBack()){
+class TransactionAdapter(val clickListener: TransactionListener):ListAdapter<MoneyTransaction, TransactionAdapter.TransactionHolder>(TransactionDiffCallBack()){
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TransactionHolder {
         return TransactionHolder.from(parent)
     }
 
     override fun onBindViewHolder(holder: TransactionHolder, position: Int) {
-        Log.d("MyRecyclerView", "onBindviewholder $position")
+        Log.d("MyRecyclerView", "onBindViewHolder $position")
         val transaction = getItem(position)
-        holder.bindTransaction(transaction)
+        holder.bindTransaction(transaction, clickListener)
     }
 
-    class TransactionHolder(private val view: View): RecyclerView.ViewHolder(view) {
+    class TransactionHolder private constructor(val binding: TransactionItemBinding): RecyclerView.ViewHolder(binding.root) {
 
-        fun bindTransaction(transaction: MoneyTransaction){
-            view.setOnClickListener{
-                val navigationId = transaction.transactionId
-                Log.d("MyRecyclerView", "Click on view $navigationId")
-                Navigation.findNavController(it).navigate(HomeFragmentDirections.actionHomeFragmentToTransactionFragment(navigationId))
-            }
+        fun bindTransaction(
+            transaction: MoneyTransaction,
+            clickListener: TransactionListener
+        ){
+            //view.setOnClickListener{
+            //    val navigationId = transaction.transactionId
+            //    Log.d("MyRecyclerView", "Click on view $navigationId")
+            //    Navigation.findNavController(it).navigate(HomeFragmentDirections.actionHomeFragmentToTransactionFragment(navigationId))
+            //}
 
-            view.amount_textViewRV.text = String.format(view.resources.getString(R.string.money_format),transaction.transactionAmt)
-            //view.date_textViewRV.text = getDateString(transaction.transactionDate, "dd-MMM-yyyy")
-            view.date_textViewRV.text = convertDatePattern(transaction.transactionDate.toString(), datePatternDB, datePatternView)
-            view.category_textViewRV.text = CategoryUtil.getCategoryName(transaction.transactionCategory)
-            view.category_imageViewRV.setImageResource(CategoryUtil.getCategoryDrawable(transaction.transactionCategory))
+            //binding.amountTextViewRV.text = String.format(binding.root.resources.getString(R.string.money_format),transaction.transactionAmt)
+            //binding.dateTextViewRV.text = convertDatePattern(transaction.transactionDate.toString(), DATE_PATTERN_DB, DATE_PATTERN_VIEW)
+            //binding.categoryTextViewRV.text = CategoryUtil.getCategoryName(transaction.transactionCategory)
+            //binding.categoryImageViewRV.setImageResource(CategoryUtil.getCategoryDrawable(transaction.transactionCategory))
+            binding.transaction = transaction
+            binding.executePendingBindings()
+            binding.clickListener = clickListener
             Log.d("MyRecyclerView", "Bind transaction")
         }
 
         companion object {
             fun from(parent: ViewGroup): TransactionHolder {
-                val inflatedView = LayoutInflater.from(parent.context)
-                    .inflate(R.layout.transaction_item, parent, false) // inflate and pass to to viewholder to bind data
-                return TransactionHolder(inflatedView)
+                //val inflatedView = LayoutInflater.from(parent.context)
+                //    .inflate(R.layout.transaction_item, parent, false) // inflate and pass to to viewholder to bind data
+                val layoutInflater = LayoutInflater.from(parent.context)
+                val binding = TransactionItemBinding.inflate(layoutInflater, parent, false)
+                return TransactionHolder(binding)
             }
         }
-
     }
 }
 
@@ -61,4 +64,8 @@ class TransactionDiffCallBack : DiffUtil.ItemCallback<MoneyTransaction>(){
         return oldItem == newItem
     }
 
+}
+
+class TransactionListener(val clickListener: (transitionId: Long)->Unit){
+    fun onClick(transaction: MoneyTransaction) = clickListener(transaction.transactionId)
 }

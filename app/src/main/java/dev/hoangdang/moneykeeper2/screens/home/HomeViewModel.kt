@@ -5,9 +5,8 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
-import dev.hoangdang.moneykeeper2.database.MoneyTransaction
 import dev.hoangdang.moneykeeper2.database.TransactionDatabaseDAO
-import dev.hoangdang.moneykeeper2.datePatternDB
+import dev.hoangdang.moneykeeper2.DATE_PATTERN_DB
 import kotlinx.coroutines.*
 import java.text.SimpleDateFormat
 import java.util.*
@@ -16,7 +15,7 @@ class HomeViewModel(val database : TransactionDatabaseDAO, application: Applicat
 
     // Database variables
     private var viewModelJob = Job() // Parent jobs for HomeViewModel coroutine
-    val transactionsToday = database.getTransactionByDate(SimpleDateFormat(datePatternDB).format(Calendar.getInstance().time).toInt())
+    val transactionsToday = database.getTransactionByDate(SimpleDateFormat(DATE_PATTERN_DB).format(Calendar.getInstance().time).toInt())
     val testLatestMoney = Transformations.map(transactionsToday){
         if(it.size >0)
             it.get(0).transactionAmt.toString()
@@ -41,6 +40,10 @@ class HomeViewModel(val database : TransactionDatabaseDAO, application: Applicat
     val test : LiveData<String>
         get() = _test
 
+    private val _navigateToTransaction = MutableLiveData<Long>()
+    val navigateToTransaction: LiveData<Long>
+        get() = _navigateToTransaction
+
     init{
         _moneyTotal.value = 99999f
     }
@@ -52,5 +55,13 @@ class HomeViewModel(val database : TransactionDatabaseDAO, application: Applicat
     override fun onCleared() {
         super.onCleared()
         viewModelJob.cancel() // cancel all coroutine by this viewModel
+    }
+
+    fun onTransactionClicked(id: Long){
+        _navigateToTransaction.value = id
+    }
+
+    fun onTransactionNavigated(){
+        _navigateToTransaction.value = null //reset after navigated
     }
 }

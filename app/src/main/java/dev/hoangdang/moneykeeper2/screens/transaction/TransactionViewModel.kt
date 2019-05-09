@@ -54,10 +54,10 @@ class TransactionViewModel(val database : TransactionDatabaseDAO, application: A
         it?.transactionNote
     }
     val date : LiveData<String> = Transformations.map(_currentTransaction){
-        convertDatePattern(it?.transactionDate.toString(), datePatternDB, datePatternView)
+        convertDatePattern(it?.transactionDate.toString(), DATE_PATTERN_DB, DATE_PATTERN_VIEW)
     }
     val time : LiveData<String> = Transformations.map(_currentTransaction){
-        convertDatePattern(it?.transactionTime.toString().padStart(6,'0'), timePatternDB, timePatternView)
+        convertDatePattern(it?.transactionTime.toString().padStart(6,'0'), TIME_PATTERN_DB, TIME_PATTERN_VIEW)
     }
 
 
@@ -87,8 +87,8 @@ class TransactionViewModel(val database : TransactionDatabaseDAO, application: A
                 night = newTransaction
                 night.transactionAmt = 0.0
                 //val current = LocalDateTime.now()
-                night.transactionTime = SimpleDateFormat(timePatternDB).format(Calendar.getInstance().time).toLong()
-                night.transactionDate = SimpleDateFormat(datePatternDB).format(Calendar.getInstance().time).toLong()
+                night.transactionTime = SimpleDateFormat(TIME_PATTERN_DB).format(Calendar.getInstance().time).toLong()
+                night.transactionDate = SimpleDateFormat(DATE_PATTERN_DB).format(Calendar.getInstance().time).toLong()
 
             }
             night // return
